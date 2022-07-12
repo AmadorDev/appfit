@@ -1,9 +1,15 @@
+import 'dart:io';
+
+import 'package:appsfit/shared/providers/favoriteProvider.dart';
+import 'package:appsfit/shared/storage/preferenceUser.dart';
 import 'package:appsfit/shared/utils/theme/appThemeView.dart';
 import 'package:appsfit/view/home/custom/DrawerController.dart';
 import 'package:appsfit/view/home/custom/homeDrawer.dart';
 import 'package:appsfit/view/home/page/homePageView.dart';
 import 'package:appsfit/view/home/page/profileView.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class NavigationHomeScreen extends StatefulWidget {
   @override
@@ -47,6 +53,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
   void changeIndex(DrawerIndex drawerIndexdata) {
     if (drawerIndex != drawerIndexdata) {
       drawerIndex = drawerIndexdata;
+
       switch (drawerIndex) {
         case DrawerIndex.HOME:
           setState(() {
@@ -65,7 +72,10 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
           break;
         case DrawerIndex.Close:
           setState(() {
-            //salir del app
+            Navigator.of(context).pop();
+            SystemNavigator.pop();
+            //exit(0);
+            print('salir');
           });
           break;
         default:

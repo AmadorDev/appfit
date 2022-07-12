@@ -121,6 +121,31 @@ class ApiServices {
     }
   }
 
+  static Future<List<Favorite>> getApiFavorites(String result) async {
+    try {
+      final url = Uri.https(
+          AppConstants.url, '/api/home/listarcentrosfitnessfavoritos');
+      var headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+      final params = {
+        "DefaultKeyUser": result //TODO: reemplazar por degaulkey logeado
+      };
+      final jsonString = json.encode(params);
+      var response = await http.post(url,
+          body: jsonString,
+          headers: headers,
+          encoding: Encoding.getByName("UTF-8"));
+
+      final listFavorite = FavoriteFits.fromJson(response.body);
+      print("----call api favorites---");
+      if (listFavorite.status == 0) {
+        return listFavorite.date;
+      }
+      return listFavorite.date;
+    } catch (err, stacktarce) {
+      return [];
+    }
+  }
+
   static Future addFavorite(String keyUser, String keyEmpresa,
       BuildContext context, int estado) async {
     try {

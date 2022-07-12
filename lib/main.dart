@@ -15,25 +15,27 @@ import 'package:appsfit/view/welcome/welcomeView.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = new PreferencesUser();
   await prefs.initPref();
+
   runApp(AppState());
 }
 
 class AppState extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: ( _ ) => UserProvider(), lazy: false, ),
-        ChangeNotifierProvider(create: ( _ ) => FitsProvider()),
-        ChangeNotifierProvider(create: ( _ ) => FavoriteProvider()),
-
-    ],
-    child: MyApp(),
+        ChangeNotifierProvider(
+          create: (_) => UserProvider(),
+          lazy: false,
+        ),
+        ChangeNotifierProvider(create: (_) => FitsProvider()),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+      ],
+      child: MyApp(),
     );
   }
 }
@@ -47,20 +49,20 @@ class MyApp extends StatelessWidget {
       title: 'Fits',
       initialRoute: '/',
       routes: {
-        '/'          : (BuildContext context) => SplashScreen(),
-        'example'    : (BuildContext context) => HomePage(),
-        'login'      : (BuildContext context) => LoginPage(),
-        'welcome'    : (BuildContext context) => WelcomeScreen(),
-        'registro'   : (BuildContext context) => SignupPage(),
-        'confirm'    : (BuildContext context) => ConfirmPage(),
-        'home'       : (BuildContext context) => NavigationHomeScreen(),
-        'detailFits' : (BuildContext context) => DetailsFitsPage(),
-        'BottonPage' : (BuildContext context) => BottonNavigationPage(),
+        '/': (BuildContext context) => SplashScreen(),
+        'example': (BuildContext context) => HomePage(),
+        'login': (BuildContext context) => LoginPage(),
+        'welcome': (BuildContext context) => WelcomeScreen(),
+        'registro': (BuildContext context) => SignupPage(),
+        'confirm': (BuildContext context) => ConfirmPage(),
+        'home': (BuildContext context) => NavigationHomeScreen(),
+        'detailFits': (BuildContext context) => DetailsFitsPage(),
+        'BottonPage': (BuildContext context) => BottonNavigationPage(),
       },
-      theme: ThemeData(     
+      theme: ThemeData(
         primarySwatch: Colors.blue,
         canvasColor: Colors.transparent,
-      //  fontFamily: "Coresans"
+        //  fontFamily: "Coresans"
       ),
     );
   }

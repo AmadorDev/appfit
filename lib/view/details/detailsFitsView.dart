@@ -80,14 +80,15 @@ class _DetailsFitsPageState extends State<DetailsFitsPage> {
         .where((o) => o.defaultKeyEmpresa == '${general.defaultKeyEmpresa!}')
         .toList();
 
-    print(result.length);
+    print("result.length  ${result.length}");
+
+    print("index x ${apiProvider.indexItem}");
+    print("index xx ${apiProvider.indexIn}");
 
     _fetchData(data, selected) {
       return _memoizer.runOnce(() async {
-        await Future.delayed(Duration(seconds: 1));
-
-        apiProvider.detailsFit(data);
-
+        await Future.delayed(Duration.zero);
+        apiProvider.detailsFit(data, 0);
         return 'REMOTE DATA';
       });
     }
@@ -95,34 +96,37 @@ class _DetailsFitsPageState extends State<DetailsFitsPage> {
     return Scaffold(
       backgroundColor: FitAppTheme.white,
       appBar: AppBar(
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.popAndPushNamed(context, 'home')),
         title: Text(''),
         actions: [
           IconButton(
-              icon: result.length == indexFavSelect
+              icon: result.length == 1
                   ? Icon(Icons.favorite)
-                  : Icon(Icons.favorite_outline),
+                  : Icon(
+                      Icons.favorite_outline,
+                      color: Colors.black54,
+                    ),
               onPressed: () async {
                 if (result.length == 0) {
-                  setState(() {
-                    indexFavSelect = 1;
-                  });
-
-                  ApiServices.addFavorite('${prefs.defaulkey}',
-                      '${general.defaultKeyEmpresa!}', context, 1);
+                  //add
+                  await favProvider.stateFavorite('${prefs.defaulkey}',
+                      '${general.defaultKeyEmpresa!}', context, 1, general);
                 } else if (result.length == 1) {
-                  setState(() {
-                    indexFavSelect = 0;
-                  });
-
-                  await favProvider
-                      .removeFavoriteById('${general.defaultKeyEmpresa!}');
-                  ApiServices.addFavorite('${prefs.defaulkey}',
-                      '${general.defaultKeyEmpresa!}', context, 0);
+                  //remove
+                  await favProvider.stateFavorite('${prefs.defaulkey}',
+                      '${general.defaultKeyEmpresa!}', context, 0, general);
                 }
-                //
-                // print('${prefs.defaulkey} -' general.defaultKeyEmpresa);
+
+                setState(() {});
               }),
-          IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
+          IconButton(
+              icon: Icon(
+                Icons.notifications,
+                color: Colors.black54,
+              ),
+              onPressed: () {}),
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -163,8 +167,12 @@ class _DetailsFitsPageState extends State<DetailsFitsPage> {
         ],
         backgroundColor: FitAppTheme.bgColor2,
       ),
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height,
+            minWidth: MediaQuery.of(context).size.width,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,38 +183,6 @@ class _DetailsFitsPageState extends State<DetailsFitsPage> {
               Center(
                 child: Column(
                   children: [
-                    /*Container(
-                        height: 120,
-                        width: 120,
-                        decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                         boxShadow: <BoxShadow>[
-                           BoxShadow(color: FitAppTheme.white100, offset: const Offset(1.0, 2.0), blurRadius: 0),
-                            ],
-                           ),
-                            child: ClipRRect(
-                            borderRadius: const BorderRadius.all(Radius.circular(60.0)),
-                            child: Image.network(
-                              general.logoTipo!,
-                              height: 150.0,
-                              width: 150.0,
-                              errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            child: IconButton(
-                              padding: EdgeInsets.only(top: 5, left: 2),
-                              color: FitAppTheme.grey,
-                              icon: new Icon(Icons.image, ),
-                              onPressed: (){
-                                
-                              },
-                          ),
-                        );
-                          },
-                          ),
-                           ),
-                        ),*/
-                    // Text(general.nombreComercialEmpresa!, style: FitAppTheme.title12,),
-
                     SizedBox(
                       height: 20.0,
                     ),
@@ -263,84 +239,7 @@ class _DetailsFitsPageState extends State<DetailsFitsPage> {
                           ),
                         );
                       } else if (v.data!.length >= 1) {
-                        return ListView.builder(
-                          itemCount: v.data!.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              height: 50.0,
-                              margin: EdgeInsets.symmetric(
-                                  vertical: 2.0, horizontal: 10.0),
-                              child: Stack(
-                                children: <Widget>[
-                                  GestureDetector(
-                                    onTap: () {
-                                      apiProvider.detailsFit(v.data![index]);
-
-                                      setState(() {
-                                        _selectedIndex = index;
-                                      });
-                                      print('INDEX $_selectedIndex');
-                                    },
-                                    child: Card(
-                                        shadowColor: FitAppTheme.bgColor2,
-                                        color: index == _selectedIndex
-                                            ? FitAppTheme.bgColorSecondary
-                                            : FitAppTheme.white,
-                                        elevation: 3,
-                                        child: Container(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.stretch,
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Column(
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 18,
-                                                            bottom: 10,
-                                                            right: 16,
-                                                            top: 13),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      children: <Widget>[
-                                                        Container(
-                                                          child: Text(
-                                                              '${v.data![index].desFechaInicio}',
-                                                              style: FitAppTheme
-                                                                  .text12),
-                                                        ),
-                                                        Container(
-                                                          child: Text(
-                                                              '${v.data![index].desFechaFin}',
-                                                              style: FitAppTheme
-                                                                  .text12),
-                                                        ),
-                                                        Container(
-                                                          child: Text(
-                                                              '(${v.data![index].codigoMembresia}) ${v.data![index].nombrePaquete}',
-                                                              style: FitAppTheme
-                                                                  .text12),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        )),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
+                        return ListItemSuscription(v: v.data!);
                       }
                     }
 
@@ -359,53 +258,82 @@ class _DetailsFitsPageState extends State<DetailsFitsPage> {
       ),
     );
   }
+}
 
-  viewDet(FitsProvider apiProvider) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Text('PLAN: ${apiProvider.onDetailsFits.isNotEmpty ? apiProvider.onDetailsFits[index].nombrePaquete : '' }', style: FitAppTheme.title15,),
-        Text(
-          'SOCIO: ${apiProvider.onDetailsFits.isNotEmpty ? apiProvider.onDetailsFits[index].nombres : ''} ${apiProvider.onDetailsFits.isNotEmpty ? apiProvider.onDetailsFits[index].apellidos : ''}',
-          style: FitAppTheme.title15,
-        ),
-        SizedBox(
-          height: 3.0,
-        ),
-        Text(
-          'OBS: ${apiProvider.onDetailsFits.isNotEmpty ? apiProvider.onDetailsFits[index].observacion : ''}',
-          style: FitAppTheme.title15,
-        ),
-        SizedBox(
-          height: 3.0,
-        ),
-        Text(
-          'PLAN: ${apiProvider.onDetailsFits.isNotEmpty ? apiProvider.onDetailsFits[index].nombrePaquete : ''}',
-          style: FitAppTheme.title15,
-        ),
-        SizedBox(
-          height: 3.0,
-        ),
-        Text(
-          'INSCRIPCION: ${apiProvider.onDetailsFits.isNotEmpty ? apiProvider.onDetailsFits[index].descFechaCreacion : ''}',
-          style: FitAppTheme.title15,
-        ),
-        SizedBox(
-          height: 3.0,
-        ),
-        Text(
-          'PRECIO: ${apiProvider.onDetailsFits.isNotEmpty ? apiProvider.onDetailsFits[index].costo : ''}',
-          style: FitAppTheme.title15,
-        ),
-        SizedBox(
-          height: 3.0,
-        ),
-        Text(
-          'A CUENTA: ${apiProvider.onDetailsFits.isNotEmpty ? apiProvider.onDetailsFits[index].debe : ''}',
-          style: FitAppTheme.title15,
-        ),
-      ],
+class ListItemSuscription extends StatelessWidget {
+  final List<Details>? v;
+  const ListItemSuscription({
+    Key? key,
+    this.v,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final prov = Provider.of<FitsProvider>(context);
+    print("indexxxxx ${prov.indexItem}");
+
+    return ListView.builder(
+      itemCount: v!.length,
+      itemBuilder: (context, index) {
+        return Container(
+          height: 50.0,
+          margin: EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
+          child: Stack(
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  prov.detailsFit(v![index], index);
+
+                  // setState(() {
+                  //   _selectedIndex = index;
+                  // });
+                },
+                child: Card(
+                    shadowColor: FitAppTheme.bgColor2,
+                    color: index == prov.indexItem
+                        ? FitAppTheme.bgColorSecondary
+                        : FitAppTheme.white,
+                    elevation: 3,
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 18, bottom: 10, right: 16, top: 13),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Container(
+                                      child: Text('${v![index].nombrePaquete}',
+                                          style: FitAppTheme.text12),
+                                    ),
+                                    Container(
+                                      child: Text('${v![index].desFechaInicio}',
+                                          style: FitAppTheme.text12),
+                                    ),
+                                    Container(
+                                      child: Text('${v![index].desFechaFin}',
+                                          style: FitAppTheme.text12),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -414,6 +342,7 @@ class NewsDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prov = Provider.of<FitsProvider>(context);
+    print("indexxxxx ${prov.indexItem}");
     final String sg = "";
 
     String convert(String s) {
@@ -442,48 +371,42 @@ class NewsDetails extends StatelessWidget {
                 SizedBox(
                   height: 15.0,
                 ),
-                Text(
-                  'SOCIO: (${prov.detail != null ? prov.detail!.codigoSocio : ''}) ${prov.detail != null ? prov.detail!.nombres : ''} ${prov.detail != null ? prov.detail!.apellidos : ''}',
-                  style: FitAppTheme.title15,
+                ItemDetail(
+                  title: 'SOCIO',
+                  value:
+                      '(${prov.detail!.codigoSocio}) ${prov.detail!.nombres} ${prov.detail!.apellidos}',
                 ),
-                SizedBox(
-                  height: 3.0,
+                separateLine(),
+                ItemDetail(
+                  title: 'N° DOCUMENTO',
+                  value: '${prov.detail!.dni}',
                 ),
-                Text(
-                  'OBS: ${prov.detail != null ? prov.detail!.obtenerTiempoVencimiento : ''}',
-                  style: FitAppTheme.title15,
+                separateLine(),
+                ItemDetail(
+                  title: 'OBS',
+                  value: '${prov.detail!.obtenerTiempoVencimiento}',
                 ),
-                SizedBox(
-                  height: 3.0,
+                separateLine(),
+                ItemDetail(
+                  title: 'PLAN',
+                  value: '${prov.detail!.descripcion}',
                 ),
-                Text(
-                  'PLAN: ${prov.detail != null ? prov.detail!.descripcion : ''}',
-                  style: FitAppTheme.title15,
+                separateLine(),
+                ItemDetail(
+                  title: 'INSCRIPCION',
+                  value: '${convert('${prov.detail!.fechaCreacion}')}',
                 ),
-                SizedBox(
-                  height: 3.0,
+                separateLine(),
+                ItemDetail(
+                  title: 'PRECIO',
+                  value: '${double.parse('${prov.detail!.costo}')}',
                 ),
-                Text(
-                  'INSCRIPCION: ${prov.detail != null ? convert('${prov.detail!.fechaCreacion}') : ''}',
-                  style: FitAppTheme.title15,
+                separateLine(),
+                ItemDetail(
+                  title: 'A CUENTA',
+                  value: '${double.parse('${prov.detail!.montoTotal}')}',
                 ),
-                SizedBox(
-                  height: 3.0,
-                ),
-                Text(
-                  'PRECIO: ${prov.detail != null ? prov.detail!.costo : ''}',
-                  style: FitAppTheme.title15,
-                ),
-                SizedBox(
-                  height: 3.0,
-                ),
-                Text(
-                  'A CUENTA: ${prov.detail != null ? prov.detail!.montoTotal : ''}',
-                  style: FitAppTheme.title15,
-                ),
-                SizedBox(
-                  height: 3.0,
-                ),
+                separateLine(),
                 cartView(),
               ],
             )
@@ -587,4 +510,55 @@ class NewsDetails extends StatelessWidget {
       ],
     );
   }
+}
+
+class ItemDetail extends StatelessWidget {
+  final String value;
+  final String title;
+  const ItemDetail({Key? key, required this.title, required this.value})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "${title}",
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text(
+              '${value}',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+Widget separateLine() {
+  return Column(
+    children: [
+      Divider(
+        height: 1,
+        thickness: 1,
+      ),
+      SizedBox(
+        height: 15,
+      ),
+    ],
+  );
 }
