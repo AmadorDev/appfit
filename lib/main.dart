@@ -1,10 +1,14 @@
 import 'package:appsfit/shared/api/apiServices.dart';
+import 'package:appsfit/shared/providers/providers.dart';
 import 'package:appsfit/shared/providers/favoriteProvider.dart';
 import 'package:appsfit/shared/providers/fitsProvider.dart';
 import 'package:appsfit/shared/storage/preferenceUser.dart';
+import 'package:appsfit/shared/utils/utils.dart';
 import 'package:appsfit/view/confirm/emailConfirmView.dart';
+import 'package:appsfit/view/demo_page.dart';
 import 'package:appsfit/view/details/detailsFitsView.dart';
-import 'package:appsfit/view/home/bottomNavigationView.dart';
+import 'package:appsfit/view/home/page/bottomNavBar/bottom_nav_bar.dart';
+
 import 'package:appsfit/view/home/homeView.dart';
 import 'package:appsfit/view/home/navigationHomeView.dart';
 import 'package:appsfit/view/signin/loginView.dart';
@@ -13,6 +17,7 @@ import 'package:appsfit/view/signup/signupView.dart';
 import 'package:appsfit/view/splash/splashScreenView.dart';
 import 'package:appsfit/view/welcome/welcomeView.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -34,6 +39,8 @@ class AppState extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (_) => FitsProvider()),
         ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+        ChangeNotifierProvider(create: (_) => BookinProvider()),
+        ChangeNotifierProvider(create: (_) => EvolutionProvider()),
       ],
       child: MyApp(),
     );
@@ -44,6 +51,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Fits',
@@ -57,8 +68,10 @@ class MyApp extends StatelessWidget {
         'confirm': (BuildContext context) => ConfirmPage(),
         'home': (BuildContext context) => NavigationHomeScreen(),
         'detailFits': (BuildContext context) => DetailsFitsPage(),
-        'BottonPage': (BuildContext context) => BottonNavigationPage(),
+        'BottonPage': (BuildContext context) => BottonNavigationBar(),
+        'demo': (_) => DemoPage(),
       },
+      scaffoldMessengerKey: NotificationUtil.messageKey,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         canvasColor: Colors.transparent,

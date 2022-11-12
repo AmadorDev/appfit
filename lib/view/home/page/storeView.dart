@@ -23,7 +23,7 @@ class _StorePageState extends State<StorePage> {
     _fetchData();
     return Center(
         child: Container(
-      child: Text('Tienda'),
+      child: Text('Estamos trabajando...'),
     ));
   }
 }

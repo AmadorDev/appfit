@@ -33,4 +33,8 @@ class FitsProvider extends ChangeNotifier {
     detail = null;
     notifyListeners();
   }
+
+  void detailResets() {
+    detail = null;
+  }
 }

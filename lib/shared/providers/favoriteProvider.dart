@@ -30,11 +30,11 @@ class FavoriteProvider extends ChangeNotifier {
   }
 
   Future<List<Favorite>>? getFavoritesFuture(String keyUser) async {
+    print(onFavoriteFits.length);
     if (onFavoriteFits.length > 0) return onFavoriteFits;
     final resp = await ApiServices.getApiFavorites("${keyUser}");
+    print(resp);
     onFavoriteFits = resp;
-    print("on ${onFavoriteFits.length}");
-    print("rep ${resp.length}");
     notifyListeners();
     return resp;
   }

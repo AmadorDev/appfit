@@ -6,6 +6,7 @@ import 'package:appsfit/shared/models/details/detailsModel.dart';
 import 'package:appsfit/shared/models/favorite/favoriteModel.dart';
 import 'package:appsfit/shared/models/favorite/favoriteResponse.dart';
 import 'package:appsfit/shared/models/general.dart';
+import 'package:appsfit/shared/providers/booking_provider.dart';
 import 'package:appsfit/shared/providers/favoriteProvider.dart';
 import 'package:appsfit/shared/providers/fitsProvider.dart';
 import 'package:appsfit/shared/storage/preferenceUser.dart';
@@ -36,16 +37,8 @@ class _DetailsFitsPageState extends State<DetailsFitsPage> {
   int currentIndex = 0;
   int indexFav = 1;
   int indexFavSelect = 1;
-  /*updates(Details value) {
-      print(value.nombrePaquete);
-             details = value;
-
-      setState(() {
-      });
-  }*/
 
   _getDetails(Details value, indexs) async {
-    print(value.nombrePaquete);
     details = value;
     index = indexs;
 
@@ -76,19 +69,36 @@ class _DetailsFitsPageState extends State<DetailsFitsPage> {
 
     onFavoriteFitss = favProvider.onFavoriteFits;
 
+    double _heightLan = MediaQuery.of(context).size.height;
+
     List result = onFavoriteFitss
         .where((o) => o.defaultKeyEmpresa == '${general.defaultKeyEmpresa!}')
         .toList();
-
-    print("result.length  ${result.length}");
-
-    print("index x ${apiProvider.indexItem}");
-    print("index xx ${apiProvider.indexIn}");
 
     _fetchData(data, selected) {
       return _memoizer.runOnce(() async {
         await Future.delayed(Duration.zero);
         apiProvider.detailsFit(data, 0);
+        final bpro = Provider.of<BookinProvider>(context, listen: false);
+        bpro.resetDate();
+        if (data != null) {
+          Details d = data;
+          bpro.isData = 1;
+          bpro.codigoMembresia = '${d.codigoMenbresia}';
+          bpro.codigoSocio = d.codigoSocio ?? 0;
+          bpro.cPaquete = d.codigoPaquete!;
+          d.estado == 1
+              ? bpro.activeMembership = true
+              : bpro.activeMembership = false;
+
+          _heightLan = _heightLan * 2;
+        } else {
+          bpro.codigoSocio = 0;
+          bpro.isData = 0;
+          bpro.activeMembership = false;
+          _heightLan = _heightLan;
+        }
+
         return 'REMOTE DATA';
       });
     }
@@ -170,12 +180,12 @@ class _DetailsFitsPageState extends State<DetailsFitsPage> {
       body: SingleChildScrollView(
         child: Container(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height,
+            maxHeight: _heightLan,
             minWidth: MediaQuery.of(context).size.width,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
                 height: 10.0,
@@ -270,7 +280,7 @@ class ListItemSuscription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prov = Provider.of<FitsProvider>(context);
-    print("indexxxxx ${prov.indexItem}");
+    final bpro = Provider.of<BookinProvider>(context);
 
     return ListView.builder(
       itemCount: v!.length,
@@ -283,6 +293,12 @@ class ListItemSuscription extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   prov.detailsFit(v![index], index);
+
+                  bpro.codigoMembresia = '${v![index].codigoMenbresia}';
+                  bpro.codigoSocio = v![index].codigoSocio ?? 0;
+                  v![index].estado == 1
+                      ? bpro.activeMembership = true
+                      : bpro.activeMembership = false;
 
                   // setState(() {
                   //   _selectedIndex = index;
@@ -342,7 +358,7 @@ class NewsDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prov = Provider.of<FitsProvider>(context);
-    print("indexxxxx ${prov.indexItem}");
+
     final String sg = "";
 
     String convert(String s) {
@@ -371,15 +387,20 @@ class NewsDetails extends StatelessWidget {
                 SizedBox(
                   height: 15.0,
                 ),
+                // ItemDetail(
+                //   title: 'SOCIO',
+                //   value:
+                //       '(${prov.detail!.codigoUnidadNegocio}) ${prov.detail!.codigoSede} ${prov.detail!.apellidos}',
+                // ),
                 ItemDetail(
                   title: 'SOCIO',
                   value:
-                      '(${prov.detail!.codigoSocio}) ${prov.detail!.nombres} ${prov.detail!.apellidos}',
+                      '(${prov.detail!.codigoSocio}) ${prov.detail!.nombres} ${prov.detail!.apellidos} ',
                 ),
                 separateLine(),
                 ItemDetail(
                   title: 'N° DOCUMENTO',
-                  value: '${prov.detail!.dni}',
+                  value: '${prov.detail!.dni} ',
                 ),
                 separateLine(),
                 ItemDetail(

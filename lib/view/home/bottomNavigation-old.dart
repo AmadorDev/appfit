@@ -1,3 +1,4 @@
+import 'package:appsfit/shared/providers/booking_provider.dart';
 import 'package:appsfit/shared/providers/fitsProvider.dart';
 import 'package:appsfit/shared/utils/theme/appThemeView.dart';
 import 'package:appsfit/view/details/detailsFitsView.dart';
@@ -29,11 +30,13 @@ class _BottonNavigationPageState extends State<BottonNavigationPage> {
   }
 
   Widget _callPage(int paginaActual, BuildContext context) {
+    final bpro = Provider.of<BookinProvider>(context, listen: false);
+    print("activeMembership status :${bpro.activeMembership}");
     switch (paginaActual) {
       case 0:
         return DetailsFitsPage();
       case 1:
-        return BookingPage();
+        return BookingView();
       case 2:
         return StorePage();
       case 3:
@@ -50,6 +53,7 @@ class _BottonNavigationPageState extends State<BottonNavigationPage> {
       backgroundColor: FitAppTheme.bgColor2,
       currentIndex: currentIndex,
       onTap: (index) {
+        print("--- index s :${index}");
         setState(() {
           currentIndex = index;
         });

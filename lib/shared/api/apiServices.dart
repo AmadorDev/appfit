@@ -8,6 +8,7 @@ import 'package:appsfit/shared/models/favorite/favoriteModel.dart';
 import 'package:appsfit/shared/models/favorite/favoriteResponse.dart';
 import 'package:appsfit/shared/models/search/searchModel.dart';
 import 'package:appsfit/shared/models/search/serachResponse.dart';
+import 'package:appsfit/shared/providers/providers.dart';
 import 'package:appsfit/shared/providers/favoriteProvider.dart';
 import 'package:appsfit/shared/utils/theme/appThemeView.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +69,7 @@ class ApiServices {
           body: jsonString,
           headers: headers,
           encoding: Encoding.getByName("UTF-8"));
-      final listDetail = DetailsFits.fromJson(response.body);
+      final listDetail = DetailsFits.fromJson(utf8.decode(response.bodyBytes));
 
       if (listDetail.status == 0) {
         return listDetail.date!;
@@ -126,9 +127,7 @@ class ApiServices {
       final url = Uri.https(
           AppConstants.url, '/api/home/listarcentrosfitnessfavoritos');
       var headers = {HttpHeaders.contentTypeHeader: 'application/json'};
-      final params = {
-        "DefaultKeyUser": result //TODO: reemplazar por degaulkey logeado
-      };
+      final params = {"DefaultKeyUser": result};
       final jsonString = json.encode(params);
       var response = await http.post(url,
           body: jsonString,
@@ -137,11 +136,11 @@ class ApiServices {
 
       final listFavorite = FavoriteFits.fromJson(response.body);
       print("----call api favorites---");
-      if (listFavorite.status == 0) {
-        return listFavorite.date;
-      }
+
       return listFavorite.date;
     } catch (err, stacktarce) {
+      print(err);
+      print(stacktarce);
       return [];
     }
   }

@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:appsfit/shared/api/apiServices.dart';
 import 'package:appsfit/shared/models/favorite/favoriteModel.dart';
 import 'package:appsfit/shared/models/search/searchModel.dart';
+import 'package:appsfit/shared/providers/booking_provider.dart';
 import 'package:appsfit/shared/providers/favoriteProvider.dart';
 import 'package:appsfit/shared/storage/preferenceUser.dart';
 import 'package:appsfit/shared/utils/theme/appThemeView.dart';
@@ -136,6 +137,11 @@ class _HomePagesState extends State<HomePages> {
   Widget buildFits(Fits fitss, String arg) => ListTile(
         selected: true,
         onTap: () {
+          final bpro = Provider.of<BookinProvider>(context, listen: false);
+          bpro.codigoUnidadNegocio =
+              int.parse(fitss.codigoUnidadNegocio ?? '0');
+          bpro.codigoSede = int.parse(fitss.codigoSede ?? '0');
+          bpro.logoGym = fitss.logoTipo;
           Navigator.pushReplacementNamed(context, 'BottonPage', arguments: arg);
           // Navigator.pushNamed(context, 'BottonPage', arguments: arg);
         },
@@ -298,6 +304,13 @@ class cards extends StatelessWidget {
                 trailing: Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   // Navigator.pushNamed(context, 'detailFits', arguments: arg);
+                  final bpro =
+                      Provider.of<BookinProvider>(context, listen: false);
+                  bpro.codigoUnidadNegocio =
+                      int.parse(favorite.codigoUnidadNegocio ?? '0');
+                  bpro.codigoSede = int.parse(favorite.codigoSede ?? '0');
+                  bpro.logoGym = favorite.logoTipo;
+
                   Navigator.pushReplacementNamed(context, 'BottonPage',
                       arguments: arg);
                 }),
@@ -314,7 +327,7 @@ class listFavoriteItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final favProvider = Provider.of<FavoriteProvider>(context, listen: false);
-    print("widget list favorites");
+
     return Expanded(
       child: FutureBuilder(
         future: favProvider.getFavoritesFuture('${prefs.defaulkey}'),

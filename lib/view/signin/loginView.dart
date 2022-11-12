@@ -143,7 +143,7 @@ class _LoginFormState extends State<_LoginForm> {
 
     // print(json.encode(response.body));
 
-    final decodedData = UserAcount.fromJson(response.body);
+    final decodedData = UserAcount.fromJson(utf8.decode(response.bodyBytes));
 
     Navigator.pop(context); //pop dialog
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(

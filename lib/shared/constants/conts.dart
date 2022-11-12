@@ -5,4 +5,5 @@ class AppConstants {
   static const String todoEndpointLogin = '/loginpersonafit';
   static const String todoEndpointSignin = '/registrarpersonafit';
   static const String todoEndpointSearchFits = '/buscarcentrosfitness';
+  // https://webapiappsfit-cliente.azurewebsites.net/api/booking/cancelarclase
 }

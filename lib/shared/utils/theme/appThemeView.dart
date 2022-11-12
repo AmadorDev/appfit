@@ -6,7 +6,7 @@ class FitAppTheme {
   static const Color background = Color(0xFFF2F3F8);
   static const Color spacer = Color(0xFFF2F2F2);
   static const String fontName = 'Eurostil Bold';
-  static const String fontNormal= 'Eurostil Normal';
+  static const String fontNormal = 'Eurostil Normal';
 
   static const Color colorAppBar = Color(0xFFFF622D);
   static const Color bgColor = Color(0xFFFF622D);
@@ -18,6 +18,11 @@ class FitAppTheme {
   static const Color grey200 = Color(0xFFF7F6F6);
   static const Color grey = Color(0xFFBEBFC1);
   static const Color white100 = Color(0xFFF5F6F7);
+
+  static const Color green = Color.fromARGB(255, 23, 134, 101);
+  static const Color txt_title = Color.fromARGB(255, 71, 73, 73);
+  static const Color txt_subtitle = Color.fromARGB(255, 123, 124, 124);
+  static const Color color_selected = Color(0xffE0342B);
 
   static const TextTheme textTheme = TextTheme(
     headline4: display1,
@@ -61,7 +66,7 @@ class FitAppTheme {
     color: black,
   );
 
-static const TextStyle title12 = TextStyle(
+  static const TextStyle title12 = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
     fontSize: 12,
@@ -69,14 +74,13 @@ static const TextStyle title12 = TextStyle(
     color: black,
   );
 
-  static const TextStyle title15= TextStyle(
+  static const TextStyle title15 = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.normal,
     fontSize: 15,
     letterSpacing: 0.18,
     color: black,
   );
-
 
   static const TextStyle titleWhite = TextStyle(
     fontFamily: fontName,
@@ -109,7 +113,6 @@ static const TextStyle title12 = TextStyle(
     letterSpacing: -0.04,
     color: white,
   );
-
 
   static const TextStyle button = TextStyle(
     fontFamily: fontName,

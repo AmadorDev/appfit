@@ -14,13 +14,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
-    /*if  (prefs.emailConfirmed == "false"){
-    print("mostrar confirm page");
-    _confirmEmail();
-  }else {
-    print("Confirmado mostrar menu");
-  }*/
   }
 
   Future<bool> _confirmEmail() async {
